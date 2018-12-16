@@ -1,0 +1,44 @@
+package reug.scalikejackson.test
+
+import org.scalatest.{FlatSpec, Matchers}
+import reug.scalikejackson.ScalaJacksonImpl._
+import reug.scalikejackson.benchmark.models.MockStruct
+import reug.scalikejackson.benchmark.utils.Resources
+
+class FunctionalityTest extends FlatSpec with Matchers with Resources {
+
+    val obj = MockStruct(1, "a", Some(true))
+    val obj_none = MockStruct(1, "a", None)
+
+    behavior of "JacksonLite"
+
+    it should "unmarshall json string properly to class" in {
+        short_mixed_json.read[MockStruct] shouldBe obj
+    }
+
+    it should "unmarshall json string properly to JsonNode" in {
+        short_mixed_json.toJson.at("/b").asBoolean() shouldBe true
+    }
+
+    it should "marshall to json properly" in {
+        val expected = """{"in":1,"sn":"a","bn":true}"""
+        obj.write shouldBe expected
+    }
+
+    it should "do custom read as expected" in {
+        short_mixed_json.read[MockStruct] shouldBe obj
+        short_mixed_json_opt.read[MockStruct] shouldBe obj_none
+        short_custom_json.read[MockStruct] shouldBe obj
+        short_custom_json_opt.read[MockStruct] shouldBe obj_none
+    }
+
+    it should "marshal sequence properly" in {
+        val obj = Seq(MockStruct(1, "a", Some(true)), MockStruct(2, "b", Some(false)))
+        val res = obj.write.toJson.asSeq[MockStruct]
+        res.length shouldBe 2
+    }
+
+    it should "extract array properly" in {
+        (short_custom_json.toJson \ "arr").asSeq[Int] shouldBe Seq(1, 2, 3)
+    }
+}
