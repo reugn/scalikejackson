@@ -23,4 +23,4 @@ Add ScalikeJackson as a dependency in your project:
 libraryDependencies += "reug" %% "scalikejackson" % "0.2.0"
 ```
 
-A collection of benchmarks results can be viewed [here](/benchmarks/src/main/scala/reug/scalalikejackson/benchmark/README.md).
+A collection of benchmarks results can be viewed [here](https://github.com/reugn/scalikejackson/blob/master/benchmarks/src/main/scala/reug/scalikejackson/benchmark/README.md).
