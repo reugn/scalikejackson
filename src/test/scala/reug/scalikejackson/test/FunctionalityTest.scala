@@ -1,9 +1,13 @@
 package reug.scalikejackson.test
 
+import java.io.ByteArrayInputStream
+import java.nio.charset.StandardCharsets
+
 import org.scalatest.{FlatSpec, Matchers}
 import reug.scalikejackson.ScalaJacksonImpl._
 import reug.scalikejackson.benchmark.models.MockStruct
 import reug.scalikejackson.benchmark.utils.Resources
+import reug.scalikejackson.play.Json
 
 class FunctionalityTest extends FlatSpec with Matchers with Resources {
 
@@ -40,5 +44,10 @@ class FunctionalityTest extends FlatSpec with Matchers with Resources {
 
     it should "extract array properly" in {
         (short_custom_json.toJson \ "arr").asSeq[Int] shouldBe Seq(1, 2, 3)
+    }
+
+    it should "process json array as iterator" in {
+        val stream = new ByteArrayInputStream(mock_json_array.getBytes(StandardCharsets.UTF_8))
+        Json.iter[MockStruct](stream).toSeq.size shouldBe 2
     }
 }
