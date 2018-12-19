@@ -3,7 +3,7 @@ package reug.scalikejackson.utils
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.node._
 
-import scala.language.implicitConversions
+import scala.language.{implicitConversions, postfixOps}
 
 object Converters {
 
@@ -12,6 +12,10 @@ object Converters {
     implicit def ~>(f: String): JsonNode = new TextNode(f)
     implicit def ~>(f: Boolean): JsonNode = BooleanNode.valueOf(f)
     implicit def ~>(f: ArrayNode): JsonNode = f.asInstanceOf[JsonNode]
+
+    implicit def ~>[T](opt: Option[T])(implicit ->> : T ~> JsonNode): JsonNode = {
+        opt.fold[JsonNode](MissingNode.getInstance)(->> >>)
+    }
 
     abstract class ~>[F, T <: JsonNode] {
         def >>(f: F): T
