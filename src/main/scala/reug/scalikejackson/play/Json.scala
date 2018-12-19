@@ -1,11 +1,16 @@
 package reug.scalikejackson.play
 
+import java.io.{IOException, InputStream}
+
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.node._
 import reug.scalikejackson.ScalaJacksonImpl._
+import reug.scalikejackson.ScalaJacksonReader
+import reug.scalikejackson.utils.JsArrayIterator
 
 import scala.collection.JavaConverters._
 import scala.language.postfixOps
+import scala.reflect.ClassTag
 
 object Json {
 
@@ -29,5 +34,12 @@ object Json {
     @inline
     def stringify(jsNode: JsonNode): String = {
         jsNode.toString
+    }
+
+    @inline
+    @throws(classOf[IllegalArgumentException])
+    @throws(classOf[IOException])
+    def iter[T: ScalaJacksonReader : ClassTag](is: InputStream): Iterator[T] = {
+        new JsArrayIterator[T](is)
     }
 }

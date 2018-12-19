@@ -36,9 +36,9 @@ class CompatibilityTest extends FlatSpec with Matchers with Resources {
         LJson.stringify(LJson.obj()) shouldBe Json.stringify(Json.obj())
         LJson.stringify(LJson.arr(1, 2, 3)) shouldBe Json.stringify(Json.arr(1, 2, 3))
         LJson.stringify(LJson.obj(
-            "i" -> 1, "b" -> true, "arr" -> LJson.arr(1, 2, 3)
+            "i" -> 1, "b" -> Some(true), "arr" -> LJson.arr(1, 2, 3)
         )) shouldBe Json.stringify(Json.obj(
-            "i" -> 1, "b" -> true, "arr" -> Json.arr(1, 2, 3)
+            "i" -> 1, "b" -> Some(true), "arr" -> Json.arr(1, 2, 3)
         ))
     }
 

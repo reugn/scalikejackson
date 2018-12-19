@@ -13,7 +13,7 @@ import scala.reflect.ClassTag
 import scala.util.Try
 
 sealed trait ScalaJacksonParser[T] {
-    protected val mappers: mutable.MutableList[ObjectMapper] = mutable.MutableList[ObjectMapper]()
+    val mappers: mutable.MutableList[ObjectMapper] = mutable.MutableList[ObjectMapper]()
     mappers += (new ObjectMapper() with ScalaObjectMapper)
         .registerModule(DefaultScalaModule)
         .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
