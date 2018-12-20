@@ -14,7 +14,7 @@ object Converters {
     implicit def ~>(f: ArrayNode): JsonNode = f.asInstanceOf[JsonNode]
 
     implicit def ~>[T](opt: Option[T])(implicit ->> : T ~> JsonNode): JsonNode = {
-        opt.fold[JsonNode](MissingNode.getInstance)(->> >>)
+        opt.fold[JsonNode](NullNode.getInstance)(->> >>)
     }
 
     abstract class ~>[F, T <: JsonNode] {

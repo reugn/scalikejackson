@@ -32,6 +32,10 @@ class CompatibilityTest extends FlatSpec with Matchers with Resources {
     }
 
     it should "evaluate builders equally" in {
+        val empty_bool: Option[Boolean] = None
+        val none_lite = LJson.obj("i" -> 1, "b" -> empty_bool, "arr" -> LJson.arr(1, 2, 3))
+        val none_play = Json.obj("i" -> 1, "b" -> empty_bool, "arr" -> Json.arr(1, 2, 3))
+
         LJson.stringify(LJson.arr()) shouldBe Json.stringify(Json.arr())
         LJson.stringify(LJson.obj()) shouldBe Json.stringify(Json.obj())
         LJson.stringify(LJson.arr(1, 2, 3)) shouldBe Json.stringify(Json.arr(1, 2, 3))
@@ -40,6 +44,9 @@ class CompatibilityTest extends FlatSpec with Matchers with Resources {
         )) shouldBe Json.stringify(Json.obj(
             "i" -> 1, "b" -> Some(true), "arr" -> Json.arr(1, 2, 3)
         ))
+        LJson.stringify(none_lite) shouldBe Json.stringify(none_play)
+        (none_lite \ "b").asOpt[Boolean] shouldBe (none_play \ "b").asOpt[Boolean]
+        (none_lite \ "ba").asOpt[Boolean] shouldBe (none_play \ "ba").asOpt[Boolean]
     }
 
     it should "merge objects properly" in {

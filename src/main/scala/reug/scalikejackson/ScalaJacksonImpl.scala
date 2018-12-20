@@ -1,7 +1,7 @@
 package reug.scalikejackson
 
 import com.fasterxml.jackson.databind.JsonNode
-import com.fasterxml.jackson.databind.node.ObjectNode
+import com.fasterxml.jackson.databind.node.{NullNode, ObjectNode}
 
 import scala.annotation.implicitNotFound
 import scala.collection.JavaConverters._
@@ -61,7 +61,12 @@ object ScalaJacksonImpl {
         def a[T <: JsonNode]: T = node.asInstanceOf[T]
 
         def \(key: String): JsLookupResult = {
-            JsLookupResult(Option(node.get(key)))
+            node get key match {
+                case _: NullNode | null =>
+                    JsLookupResult(None)
+                case js_node =>
+                    JsLookupResult(Some(js_node))
+            }
         }
 
         def \\(key: String): Seq[JsonNode] = {
