@@ -20,7 +20,7 @@ resolvers += Resolver.bintrayRepo("reug", "maven")
 ```
 Add ScalikeJackson as a dependency in your project:
 ```sbtshell
-libraryDependencies += "reug" %% "scalikejackson" % "0.3.0"
+libraryDependencies += "reug" %% "scalikejackson" % "0.3.1"
 ```
 
 A collection of benchmarks results can be viewed [here](https://github.com/reugn/scalikejackson/blob/master/benchmarks/src/main/scala/reug/scalikejackson/benchmark/README.md).
