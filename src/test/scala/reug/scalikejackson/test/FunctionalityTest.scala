@@ -42,8 +42,10 @@ class FunctionalityTest extends FlatSpec with Matchers with Resources {
         res.length shouldBe 2
     }
 
-    it should "extract array properly" in {
+    it should "lookup keys properly" in {
         (short_custom_json.toJson \ "arr").asSeq[Int] shouldBe Seq(1, 2, 3)
+        (short_custom_json.toJson \ "n" \ "m").asOpt[String] shouldBe None
+        (short_custom_json.toJson \ "in").as[Int] shouldBe 1
     }
 
     it should "process json array as iterator" in {
