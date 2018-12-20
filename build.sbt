@@ -1,7 +1,7 @@
 name := "scalikejackson"
 organization := "reug"
 
-version := "0.3.0"
+version := "0.3.1"
 
 scalaVersion := "2.12.8"
 crossScalaVersions := Seq("2.11.12", scalaVersion.value)
