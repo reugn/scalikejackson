@@ -92,6 +92,16 @@ object ScalaJacksonImpl {
             result.remove(key)
             result
         }
+
+        def filter(cond: JsonNode => Boolean = _.isNull): ObjectNode = {
+            val result = source.deepCopy.removeAll()
+            val fields = source.fieldNames.asScala.toList
+            for (f <- fields) {
+                val item = source get f
+                if (!cond(item)) result.set(f, item)
+            }
+            result
+        }
     }
 
     implicit class SeqImpl[T: ScalaJacksonWriter : ClassTag](val seq: Seq[T]) {

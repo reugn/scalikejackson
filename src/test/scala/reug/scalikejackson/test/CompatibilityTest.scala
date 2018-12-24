@@ -44,6 +44,7 @@ class CompatibilityTest extends FlatSpec with Matchers with Resources {
         )) shouldBe Json.stringify(Json.obj(
             "i" -> 1, "b" -> Some(true), "arr" -> Json.arr(1, 2, 3)
         ))
+        LJson.stringify(none_lite.filter()) shouldBe Json.stringify(none_play - "b")
         LJson.stringify(none_lite) shouldBe Json.stringify(none_play)
         (none_lite \ "b").asOpt[Boolean] shouldBe (none_play \ "b").asOpt[Boolean]
         (none_lite \ "ba").asOpt[Boolean] shouldBe (none_play \ "ba").asOpt[Boolean]
