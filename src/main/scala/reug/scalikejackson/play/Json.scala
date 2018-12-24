@@ -17,12 +17,12 @@ object Json {
     private val json_node_factory = JsonNodeFactory.withExactBigDecimals(true)
 
     @inline
-    def obj(fields: (String, JsonNode)*): JsonNode = {
-        new ObjectNode(json_node_factory).setAll(fields.toMap asJava)
+    def obj(fields: (String, JsonNode)*): ObjectNode = {
+        new ObjectNode(json_node_factory).setAll(fields.toMap asJava).a[ObjectNode]
     }
 
     @inline
-    def arr(items: JsonNode*): JsonNode = {
+    def arr(items: JsonNode*): ArrayNode = {
         new ArrayNode(json_node_factory).addAll(items asJava)
     }
 
