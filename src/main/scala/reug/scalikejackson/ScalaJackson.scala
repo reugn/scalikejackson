@@ -61,6 +61,13 @@ trait ScalaJacksonReader[T] extends ScalaJacksonParser[T] {
         _serdeException("deserializer")
     }
 
+    def convert(obj: Any)(implicit ctag: ClassTag[T]): T = {
+        for (i <- mappers.indices) {
+            Try(mappers(i).convertValue(obj, ctag.runtimeClass.asInstanceOf[Class[T]])).toOption.map(return _)
+        }
+        _serdeException("deserializer")
+    }
+
     def +(de: StdDeserializer[T])(implicit ctag: ClassTag[T]): ScalaJacksonReader[T] =
         registerDeserializer(de).asInstanceOf[ScalaJacksonReader[T]]
 }

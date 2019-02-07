@@ -18,11 +18,11 @@ case class JsLookupResult(node: Option[JsonNode]) {
 
     @throws(classOf[NoSuchElementException])
     def as[@specialized(Specializable.Everything) T: ScalaJacksonReader : ClassTag]: T = {
-        node.get.toString.read[T]
+        node.get.as[T]
     }
 
     def asOpt[@specialized(Specializable.Everything) T: ScalaJacksonReader : ClassTag]: Option[T] = {
-        node.map(v => v.toString.read[T])
+        node.flatMap(_.asOpt[T])
     }
 
     @throws(classOf[NoSuchElementException])
@@ -31,6 +31,6 @@ case class JsLookupResult(node: Option[JsonNode]) {
     }
 
     def asSeqOpt[T: ScalaJacksonReader : ClassTag]: Option[Seq[T]] = {
-        node.flatMap(v => v.asSeqOpt[T])
+        node.flatMap(_.asSeqOpt[T])
     }
 }

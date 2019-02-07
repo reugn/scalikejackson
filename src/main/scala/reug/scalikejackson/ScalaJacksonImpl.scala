@@ -40,8 +40,7 @@ object ScalaJacksonImpl {
         def asSeq[T: ScalaJacksonReader : ClassTag]: Seq[T] = {
             if (node.isArray) {
                 node.iterator().asScala.toSeq.map {
-                    el =>
-                        el.toString.read[T]
+                    el => el.as[T]
                 }
             } else {
                 throw new UnsupportedOperationException("JsonNode is not an array")
@@ -55,7 +54,13 @@ object ScalaJacksonImpl {
         }
 
         def as[@specialized(Specializable.Everything) T: ScalaJacksonReader : ClassTag]: T = {
-            node.toString.read[T]
+            implicitly[ScalaJacksonReader[T]] convert node
+        }
+
+        def asOpt[T: ScalaJacksonReader : ClassTag]: Option[T] = {
+            Try {
+                node.as[T]
+            } toOption
         }
 
         def a[T <: JsonNode]: T = node.asInstanceOf[T]
