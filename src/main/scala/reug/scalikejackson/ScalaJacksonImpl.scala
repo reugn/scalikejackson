@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.node.{NullNode, ObjectNode}
 
 import scala.annotation.implicitNotFound
 import scala.collection.JavaConverters._
+import scala.collection.breakOut
 import scala.language.postfixOps
 import scala.reflect.ClassTag
 import scala.util.Try
@@ -50,6 +51,22 @@ object ScalaJacksonImpl {
         def asSeqOpt[T: ScalaJacksonReader : ClassTag]: Option[Seq[T]] = {
             Try {
                 node.asSeq[T]
+            } toOption
+        }
+
+        def asMap[T: ScalaJacksonReader : ClassTag]: Map[String, T] = {
+            if (node.isObject) {
+                node.fields().asScala.toSeq.map {
+                    el => (el.getKey, el.getValue.as[T])
+                }(breakOut)
+            } else {
+                throw new UnsupportedOperationException("JsonNode is not an object")
+            }
+        }
+
+        def asMapOpt[T: ScalaJacksonReader : ClassTag]: Option[Map[String, T]] = {
+            Try {
+                node.asMap[T]
             } toOption
         }
 

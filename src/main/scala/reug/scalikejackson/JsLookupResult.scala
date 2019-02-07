@@ -33,4 +33,13 @@ case class JsLookupResult(node: Option[JsonNode]) {
     def asSeqOpt[T: ScalaJacksonReader : ClassTag]: Option[Seq[T]] = {
         node.flatMap(_.asSeqOpt[T])
     }
+
+    @throws(classOf[NoSuchElementException])
+    def asMap[T: ScalaJacksonReader : ClassTag]: Map[String, T] = {
+        node.get.asMap[T]
+    }
+
+    def asMapOpt[T: ScalaJacksonReader : ClassTag]: Option[Map[String, T]] = {
+        node.flatMap(_.asMapOpt[T])
+    }
 }

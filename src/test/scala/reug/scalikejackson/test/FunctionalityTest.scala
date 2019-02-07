@@ -52,4 +52,11 @@ class FunctionalityTest extends FlatSpec with Matchers with Resources {
         val stream = new ByteArrayInputStream(mock_json_array.getBytes(StandardCharsets.UTF_8))
         Json.iter[MockStruct](stream).toSeq.size shouldBe 2
     }
+
+    it should "parse json as map properly" in {
+        val v = """{"1":{"in":1,"sn":"a","bn":true},"2":{"i":1,"s":"a","b":true}}"""
+        v.toJson.asMap[MockStruct] foreach {
+            e => e._2 shouldBe obj
+        }
+    }
 }
