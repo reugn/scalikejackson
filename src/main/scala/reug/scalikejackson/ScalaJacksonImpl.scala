@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.node.{NullNode, ObjectNode}
 
 import scala.annotation.implicitNotFound
 import scala.collection.JavaConverters._
+import scala.collection.breakOut
 import scala.language.postfixOps
 import scala.reflect.ClassTag
 import scala.util.Try
@@ -40,8 +41,7 @@ object ScalaJacksonImpl {
         def asSeq[T: ScalaJacksonReader : ClassTag]: Seq[T] = {
             if (node.isArray) {
                 node.iterator().asScala.toSeq.map {
-                    el =>
-                        el.toString.read[T]
+                    el => el.as[T]
                 }
             } else {
                 throw new UnsupportedOperationException("JsonNode is not an array")
@@ -54,8 +54,30 @@ object ScalaJacksonImpl {
             } toOption
         }
 
+        def asMap[T: ScalaJacksonReader : ClassTag]: Map[String, T] = {
+            if (node.isObject) {
+                node.fields().asScala.toSeq.map {
+                    el => (el.getKey, el.getValue.as[T])
+                }(breakOut)
+            } else {
+                throw new UnsupportedOperationException("JsonNode is not an object")
+            }
+        }
+
+        def asMapOpt[T: ScalaJacksonReader : ClassTag]: Option[Map[String, T]] = {
+            Try {
+                node.asMap[T]
+            } toOption
+        }
+
         def as[@specialized(Specializable.Everything) T: ScalaJacksonReader : ClassTag]: T = {
-            node.toString.read[T]
+            implicitly[ScalaJacksonReader[T]] convert node
+        }
+
+        def asOpt[T: ScalaJacksonReader : ClassTag]: Option[T] = {
+            Try {
+                node.as[T]
+            } toOption
         }
 
         def a[T <: JsonNode]: T = node.asInstanceOf[T]
