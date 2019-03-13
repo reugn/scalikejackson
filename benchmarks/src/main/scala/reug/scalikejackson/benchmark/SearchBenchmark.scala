@@ -9,8 +9,7 @@ import reug.scalikejackson.ScalaJacksonImpl._
 import reug.scalikejackson.benchmark.utils.Res
 
 /**
-  * sbt
-  * jmh:run -i 1 -wi 1 -f1 -t1 .*SearchBenchmark.*
+  * sbt "bench/jmh:run -i 1 -wi 1 -f1 -t1 .*SearchBenchmark.*"
   */
 @OutputTimeUnit(TimeUnit.MILLISECONDS)
 @BenchmarkMode(Array(Mode.Throughput))

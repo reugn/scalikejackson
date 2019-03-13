@@ -10,8 +10,7 @@ import reug.scalikejackson.benchmark.utils.Res
 import reug.scalikejackson.test.models.MockStruct
 
 /**
-  * sbt
-  * jmh:run -i 1 -wi 1 -f1 -t1 .*ReadBenchmark.*
+  * sbt "bench/jmh:run -i 1 -wi 1 -f1 -t1 .*ReadBenchmark.*"
   */
 @OutputTimeUnit(TimeUnit.MILLISECONDS)
 @BenchmarkMode(Array(Mode.Throughput))

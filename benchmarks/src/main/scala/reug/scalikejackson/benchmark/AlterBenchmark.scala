@@ -10,8 +10,7 @@ import reug.scalikejackson.benchmark.utils.Res
 import reug.scalikejackson.play.{Json => LJson}
 
 /**
-  * sbt
-  * jmh:run -i 1 -wi 1 -f1 -t1 .*AlterBenchmark.*
+  * sbt "bench/jmh:run -i 1 -wi 1 -f1 -t1 .*AlterBenchmark.*"
   */
 @OutputTimeUnit(TimeUnit.MILLISECONDS)
 @BenchmarkMode(Array(Mode.Throughput))
