@@ -3,6 +3,7 @@ package reug.scalikejackson.benchmark
 import java.util.concurrent.TimeUnit
 
 import org.openjdk.jmh.annotations.{Benchmark, BenchmarkMode, Mode, OutputTimeUnit}
+import org.openjdk.jmh.infra.Blackhole
 import play.api.libs.json.Json
 import reug.scalikejackson.ScalaJacksonImpl._
 import reug.scalikejackson.benchmark.utils.Res
@@ -17,48 +18,48 @@ import reug.scalikejackson.test.models.MockStruct
 class ReadBenchmark {
 
     @Benchmark
-    def unmarshalLite(res: Res): Unit = {
+    def unmarshalLite(bh: Blackhole, res: Res): Unit = {
         for (_ <- 1 to 100) {
-            res.short_custom_json_opt.read[MockStruct]
+            bh.consume(res.short_custom_json_opt.read[MockStruct])
         }
     }
 
     @Benchmark
-    def unmarshalPlay(res: Res): Unit = {
+    def unmarshalPlay(bh: Blackhole, res: Res): Unit = {
         for (_ <- 1 to 100) {
-            Json.parse(res.short_custom_json_opt).as[MockStruct]
+            bh.consume(Json.parse(res.short_custom_json_opt).as[MockStruct])
         }
     }
 
     @Benchmark
-    def unmarshalLiteJson(res: Res): Unit = {
+    def unmarshalLiteJson(bh: Blackhole, res: Res): Unit = {
         for (_ <- 1 to 100) {
-            res.short_custom_json_opt.toJson
+            bh.consume(res.short_custom_json_opt.toJson)
         }
     }
 
     @Benchmark
-    def unmarshalPlayJson(res: Res): Unit = {
+    def unmarshalPlayJson(bh: Blackhole, res: Res): Unit = {
         for (_ <- 1 to 100) {
-            Json.parse(res.short_custom_json_opt)
+            bh.consume(Json.parse(res.short_custom_json_opt))
         }
     }
 
     @Benchmark
-    def unmarshalSeqLite(): Unit = {
+    def unmarshalSeqLite(bh: Blackhole): Unit = {
         val obj = Seq(MockStruct(1, "a", Some(true)), MockStruct(2, "b", Some(false)))
         val str = obj.write
         for (_ <- 1 to 100) {
-            str.toJson.asSeq[MockStruct]
+            bh.consume(str.toJson.asSeq[MockStruct])
         }
     }
 
     @Benchmark
-    def unmarshalSeqPlay(): Unit = {
+    def unmarshalSeqPlay(bh: Blackhole): Unit = {
         val obj = Seq(MockStruct(1, "a", Some(true)), MockStruct(2, "b", Some(false)))
         val str = obj.write
         for (_ <- 1 to 100) {
-            Json.parse(str).as[Seq[MockStruct]]
+            bh.consume(Json.parse(str).as[Seq[MockStruct]])
         }
     }
 }

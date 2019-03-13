@@ -3,6 +3,7 @@ package reug.scalikejackson.benchmark
 import java.util.concurrent.TimeUnit
 
 import org.openjdk.jmh.annotations._
+import org.openjdk.jmh.infra.Blackhole
 import play.api.libs.json.Json
 import reug.scalikejackson.ScalaJacksonImpl._
 import reug.scalikejackson.benchmark.utils.Res
@@ -16,40 +17,40 @@ import reug.scalikejackson.benchmark.utils.Res
 class SearchBenchmark {
 
     @Benchmark
-    def searchLinearLite(res: Res): Unit = {
+    def searchLinearLite(bh: Blackhole, res: Res): Unit = {
         for (_ <- 1 to 100) {
-            (res.short_mixed_json.toJson \ "o" \ "ki").as[Int]
+            bh.consume((res.short_mixed_json.toJson \ "o" \ "ki").as[Int])
         }
     }
 
     @Benchmark
-    def searchLinearPlay(res: Res): Unit = {
+    def searchLinearPlay(bh: Blackhole, res: Res): Unit = {
         for (_ <- 1 to 100) {
-            (Json.parse(res.short_mixed_json) \ "o" \ "ki").as[Int]
+            bh.consume((Json.parse(res.short_mixed_json) \ "o" \ "ki").as[Int])
         }
     }
 
     @Benchmark
-    def searchBigLinearLite(res: Res): Unit = {
-        (res.big_json.toJson \ "a" \ "b" \ "c").as[Int]
+    def searchBigLinearLite(bh: Blackhole, res: Res): Unit = {
+        bh.consume((res.big_json.toJson \ "a" \ "b" \ "c").as[Int])
     }
 
     @Benchmark
-    def searchBigLinearPlay(res: Res): Unit = {
-        (Json.parse(res.big_json) \ "a" \ "b" \ "c").as[Int]
+    def searchBigLinearPlay(bh: Blackhole, res: Res): Unit = {
+        bh.consume((Json.parse(res.big_json) \ "a" \ "b" \ "c").as[Int])
     }
 
     @Benchmark
-    def searchDeepLite(res: Res): Unit = {
+    def searchDeepLite(bh: Blackhole, res: Res): Unit = {
         for (_ <- 1 to 100) {
-            (res.short_mixed_json.toJson \\ "ks").head.as[String]
+            bh.consume((res.short_mixed_json.toJson \\ "ks").head.as[String])
         }
     }
 
     @Benchmark
-    def searchDeepPlay(res: Res): Unit = {
+    def searchDeepPlay(bh: Blackhole, res: Res): Unit = {
         for (_ <- 1 to 100) {
-            (Json.parse(res.short_mixed_json) \\ "ks").head.as[String]
+            bh.consume((Json.parse(res.short_mixed_json) \\ "ks").head.as[String])
         }
     }
 }

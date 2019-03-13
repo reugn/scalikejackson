@@ -3,6 +3,7 @@ package reug.scalikejackson.benchmark
 import java.util.concurrent.TimeUnit
 
 import org.openjdk.jmh.annotations._
+import org.openjdk.jmh.infra.Blackhole
 import play.api.libs.json.Json
 import reug.scalikejackson.ScalaJacksonImpl._
 import reug.scalikejackson.test.models.MockStruct
@@ -16,18 +17,18 @@ import reug.scalikejackson.test.models.MockStruct
 class WriteBenchmark {
 
     @Benchmark
-    def marshalLite(): Unit = {
+    def marshalLite(bh: Blackhole): Unit = {
         val obj = MockStruct(1, "a", Some(true))
         for (_ <- 1 to 100) {
-            obj.write
+            bh.consume(obj.write)
         }
     }
 
     @Benchmark
-    def marshalPlay(): Unit = {
+    def marshalPlay(bh: Blackhole): Unit = {
         val obj = MockStruct(1, "a", Some(true))
         for (_ <- 1 to 100) {
-            Json.toJson(obj).toString
+            bh.consume(Json.toJson(obj).toString)
         }
     }
 }
