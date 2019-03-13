@@ -1,8 +1,8 @@
-package reug.scalikejackson.benchmark.enums
+package reug.scalikejackson.commons.enums
 
 import play.api.libs.json.Writes
-import reug.scalikejackson.benchmark.enums.MockEnum.MockEnum
-import reug.scalikejackson.benchmark.utils.EnumUtils
+import reug.scalikejackson.commons.enums.MockEnum.MockEnum
+import reug.scalikejackson.commons.utils.EnumUtils
 
 object MockEnum extends Enumeration {
     type MockEnum = Value

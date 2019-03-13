@@ -5,9 +5,9 @@ import java.nio.charset.StandardCharsets
 
 import org.scalatest.{FlatSpec, Matchers}
 import reug.scalikejackson.ScalaJacksonImpl._
-import reug.scalikejackson.benchmark.models.MockStruct
-import reug.scalikejackson.benchmark.utils.Resources
+import reug.scalikejackson.commons.utils.Resources
 import reug.scalikejackson.play.Json
+import reug.scalikejackson.test.models.MockStruct
 
 class FunctionalityTest extends FlatSpec with Matchers with Resources {
 

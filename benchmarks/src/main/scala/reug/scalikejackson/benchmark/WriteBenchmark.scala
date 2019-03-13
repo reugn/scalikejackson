@@ -5,7 +5,7 @@ import java.util.concurrent.TimeUnit
 import org.openjdk.jmh.annotations._
 import play.api.libs.json.Json
 import reug.scalikejackson.ScalaJacksonImpl._
-import reug.scalikejackson.benchmark.models.MockStruct
+import reug.scalikejackson.test.models.MockStruct
 
 /**
   * sbt
