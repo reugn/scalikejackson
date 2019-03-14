@@ -1,4 +1,4 @@
-package reug.scalikejackson.benchmark.utils
+package reug.scalikejackson.commons.utils
 
 import java.io.InputStream
 

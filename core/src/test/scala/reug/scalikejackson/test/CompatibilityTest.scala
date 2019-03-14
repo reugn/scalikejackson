@@ -4,10 +4,10 @@ import com.fasterxml.jackson.databind.node.ObjectNode
 import org.scalatest.{FlatSpec, Matchers}
 import play.api.libs.json.{JsObject, Json}
 import reug.scalikejackson.ScalaJacksonImpl._
-import reug.scalikejackson.benchmark.enums.MockEnum
-import reug.scalikejackson.benchmark.models.{EnumStruct, MockStruct}
-import reug.scalikejackson.benchmark.utils.Resources
+import reug.scalikejackson.commons.enums.MockEnum
+import reug.scalikejackson.commons.utils.Resources
 import reug.scalikejackson.play.{Json => LJson}
+import reug.scalikejackson.test.models.{EnumStruct, MockStruct}
 import reug.scalikejackson.utils.Converters._
 
 class CompatibilityTest extends FlatSpec with Matchers with Resources {

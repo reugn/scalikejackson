@@ -1,8 +1,6 @@
-package reug.scalikejackson.benchmark.utils
+package reug.scalikejackson.commons.utils
 
 import play.api.libs.json._
-
-import scala.language.implicitConversions
 
 object EnumUtils {
     def enumReads[E <: Enumeration](enum: E): Reads[E#Value] = Reads {

@@ -128,16 +128,7 @@ object ScalaJacksonImpl {
 
     implicit class SeqImpl[T: ScalaJacksonWriter : ClassTag](val seq: Seq[T]) {
         def write: String = {
-            val buffer = StringBuilder.newBuilder
-            buffer.append("[")
-            seq.foreach {
-                el =>
-                    buffer.append(implicitly[ScalaJacksonWriter[T]].write(el) + ",")
-            }
-            if (buffer.length > 1)
-                buffer.dropRight(1).append("]").toString()
-            else
-                buffer.toString()
+            "[" + seq.map(implicitly[ScalaJacksonWriter[T]].write).mkString(",") + "]"
         }
     }
 
