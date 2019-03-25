@@ -16,30 +16,25 @@ object Json {
 
     private val json_node_factory = JsonNodeFactory.withExactBigDecimals(true)
 
-    @inline
-    def obj(fields: (String, JsonNode)*): ObjectNode = {
+    @inline def obj(fields: (String, JsonNode)*): ObjectNode = {
         new ObjectNode(json_node_factory).setAll(fields.toMap asJava).a[ObjectNode]
     }
 
-    @inline
-    def arr(items: JsonNode*): ArrayNode = {
+    @inline def arr(items: JsonNode*): ArrayNode = {
         new ArrayNode(json_node_factory).addAll(items asJava)
     }
 
-    @inline
-    def parse(str: String): JsonNode = {
+    @inline def parse(str: String): JsonNode = {
         str.toJson
     }
 
-    @inline
-    def stringify(jsNode: JsonNode): String = {
+    @inline def stringify(jsNode: JsonNode): String = {
         jsNode.toString
     }
 
-    @inline
     @throws(classOf[IllegalArgumentException])
     @throws(classOf[IOException])
-    def iter[T: ScalaJacksonReader : ClassTag](is: InputStream): Iterator[T] = {
+    @inline def iter[T: ScalaJacksonReader : ClassTag](is: InputStream): Iterator[T] = {
         new JsArrayIterator[T](is)
     }
 }
