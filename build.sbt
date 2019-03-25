@@ -49,13 +49,22 @@ lazy val commons = (project in file("commons")).settings(
     libraryDependencies += playLib
 )
 
+lazy val `macro` = (project in file("macro")).settings(
+    commonSettings,
+    noPublishSettings
+).settings(
+    name := "scalikejackson-macro",
+    libraryDependencies += "org.scala-lang" % "scala-reflect" % scalaVersion.value
+)
+
 lazy val core = (project in file("core")).settings(
     commonSettings
 ).settings(
     name := "scalikejackson",
     libraryDependencies += playLib % Test
 ).dependsOn(
-    commons % "test->compile"
+    commons % "test->compile",
+    `macro`
 )
 
 lazy val root = (project in file(".")).settings(
