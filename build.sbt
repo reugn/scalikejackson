@@ -14,6 +14,14 @@ lazy val commonSettings = Seq(
         "com.fasterxml.jackson.module" %% "jackson-module-scala" % jacksonVersion,
         "org.scalatest" %% "scalatest" % "3.0.5" % Test
     ),
+    scalacOptions := Seq(
+        "-target:jvm-1.8",
+        "-unchecked",
+        "-deprecation",
+        "-feature",
+        "-encoding", "utf8",
+        "-Xlint:-missing-interpolator"
+    ),
     licenses += ("Apache-2.0", url("https://www.apache.org/licenses/LICENSE-2.0.html"))
 )
 
