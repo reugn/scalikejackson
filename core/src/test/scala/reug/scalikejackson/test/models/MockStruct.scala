@@ -2,7 +2,6 @@ package reug.scalikejackson.test.models
 
 import com.fasterxml.jackson.core.{JsonGenerator, JsonParser}
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer
-import com.fasterxml.jackson.databind.node.{BooleanNode, IntNode}
 import com.fasterxml.jackson.databind.ser.std.StdSerializer
 import com.fasterxml.jackson.databind.{DeserializationContext, JsonNode, SerializerProvider}
 import play.api.libs.functional.syntax._
@@ -32,9 +31,9 @@ object MockStruct {
     class MockStructDe(t: Class[MockStruct]) extends StdDeserializer[MockStruct](t) {
         override def deserialize(p: JsonParser, ctxt: DeserializationContext): MockStruct = {
             val node = p.getCodec.readTree[JsonNode](p)
-            val i = node.get("in").asInstanceOf[IntNode].intValue()
+            val i = node.get("in").intValue
             val s = node.get("sn").asText
-            val b = Option(node.get("bn")).map(_.asInstanceOf[BooleanNode].booleanValue())
+            val b = Option(node.get("bn")).map(_.booleanValue)
             MockStruct(i, s, b)
         }
     }
