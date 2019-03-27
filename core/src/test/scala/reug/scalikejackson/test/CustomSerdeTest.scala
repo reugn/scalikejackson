@@ -32,8 +32,8 @@ class CustomSerdeTest extends FlatSpec with Matchers with Resources {
             ("bn", Option(classOf[Boolean]))
         )
 
-        implicit val mock_format = Json.format[MockStruct] + (mock_writes, mock_reads)
-        implicit val container_format = Json.format[Container] + (mock_writes, mock_reads)
+        implicit val mock_format = Json.format[MockStruct] or(mock_writes, mock_reads)
+        implicit val container_format = Json.format[Container] or(mock_writes, mock_reads)
 
         mock_instance.write shouldBe """{"in":1,"sn":"a","bn":true}"""
         container_instance.write shouldBe """{"i_str":"asdf","i_mock":{"in":1,"sn":"a","bn":true}}"""

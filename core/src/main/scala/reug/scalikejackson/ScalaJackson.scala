@@ -73,7 +73,7 @@ trait ScalaJacksonReader[T] extends ScalaJacksonParser[T] {
         _serdeException(getClass.getSimpleName)
     }
 
-    def +[U: ClassTag](de: StdDeserializer[U]): this.type =
+    def or[U: ClassTag](de: StdDeserializer[U]): this.type =
         registerDeserializer(de)
 }
 
@@ -85,12 +85,12 @@ trait ScalaJacksonWriter[T] extends ScalaJacksonParser[T] {
         _serdeException(getClass.getSimpleName)
     }
 
-    def +[U: ClassTag](ser: StdSerializer[U]): this.type =
+    def or[U: ClassTag](ser: StdSerializer[U]): this.type =
         registerSerializer(ser)
 }
 
 trait ScalaJacksonFormatter[T] extends ScalaJacksonReader[T] with ScalaJacksonWriter[T] {
-    def +[U: ClassTag](serde: (StdSerializer[U], StdDeserializer[U])): this.type =
+    def or[U: ClassTag](serde: (StdSerializer[U], StdDeserializer[U])): this.type =
         registerSerde(serde)
 }
 

@@ -32,7 +32,7 @@ object MockStruct {
     )
 
     implicit val formatter: ScalaJacksonFormatter[MockStruct] =
-        LJson.format[MockStruct] + (writer, reader)
+        LJson.format[MockStruct] or(writer, reader)
 
     val mock_reads: Reads[MockStruct] = (
         (__ \ "in").read[Int] and
