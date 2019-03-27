@@ -1,5 +1,8 @@
 package reug.scalikejackson.test
 
+import java.security.InvalidParameterException
+
+import com.fasterxml.jackson.databind.PropertyNamingStrategy
 import org.scalatest.{FlatSpec, Matchers}
 import reug.scalikejackson.ScalaJacksonImpl._
 import reug.scalikejackson.commons.models.CamelCaseClass
@@ -45,5 +48,18 @@ class CustomSerdeTest extends FlatSpec with Matchers with Resources {
         implicit val camel_case_format = Json.format[CamelCaseClass]()
         camelCaseClassObj.write shouldBe camel_case_json
         Json.parse(camel_case_json).as[CamelCaseClass] shouldEqual camelCaseClassObj
+    }
+
+    it should "parse properly with snake case naming strategy" in {
+        implicit val camel_case_format = Json.format[CamelCaseClass](PropertyNamingStrategy.SNAKE_CASE)
+        camelCaseClassObj.write shouldBe camel_case_to_snake_json
+        Json.parse(camel_case_to_snake_json).as[CamelCaseClass] shouldEqual camelCaseClassObj
+    }
+
+    it should "fail with unsupported configuration" in {
+        val thrown = intercept[InvalidParameterException] {
+            implicit val camel_case_format = Json.format[CamelCaseClass]("Unknown")
+        }
+        thrown.getMessage shouldBe "Invalid configuration Unknown"
     }
 }
