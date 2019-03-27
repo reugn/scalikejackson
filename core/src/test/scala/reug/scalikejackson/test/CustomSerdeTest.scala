@@ -2,6 +2,7 @@ package reug.scalikejackson.test
 
 import org.scalatest.{FlatSpec, Matchers}
 import reug.scalikejackson.ScalaJacksonImpl._
+import reug.scalikejackson.commons.models.CamelCaseClass
 import reug.scalikejackson.commons.utils.Resources
 import reug.scalikejackson.play.Json
 import reug.scalikejackson.test.models.MockStruct
@@ -36,5 +37,13 @@ class CustomSerdeTest extends FlatSpec with Matchers with Resources {
 
         mock_instance.write shouldBe """{"in":1,"sn":"a","bn":true}"""
         container_instance.write shouldBe """{"i_str":"asdf","i_mock":{"in":1,"sn":"a","bn":true}}"""
+    }
+
+    behavior of "Camel Case Property Naming"
+
+    it should "parse properly" in {
+        implicit val camel_case_format = Json.format[CamelCaseClass]
+        camelCaseClassObj.write shouldBe camel_case_json
+        Json.parse(camel_case_json).as[CamelCaseClass] shouldEqual camelCaseClassObj
     }
 }
