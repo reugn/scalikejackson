@@ -93,24 +93,30 @@ object Json {
     /**
       * Creates new `ScalaJacksonRead[T]` for generic T type
       *
+      * @param config ObjectMapper configuration objects.
+      *               See supported [[ScalaJacksonParser.parseConfiguration]]
       * @tparam T generic class type
       * @return ScalaJacksonReader[T]
       */
-    def read[T: ClassTag]: ScalaJacksonReader[T] = new ScalaJacksonRead[T]
+    def read[T: ClassTag](config: Any*): ScalaJacksonReader[T] = new ScalaJacksonRead[T](config: _*)
 
     /**
       * Creates new `ScalaJacksonWrite[T]` for generic T type
       *
+      * @param config ObjectMapper configuration objects.
+      *               See supported [[ScalaJacksonParser.parseConfiguration]]
       * @tparam T generic class type
       * @return ScalaJacksonWriter[T]
       */
-    def write[T: ClassTag]: ScalaJacksonWriter[T] = new ScalaJacksonWrite[T]
+    def write[T: ClassTag](config: Any*): ScalaJacksonWriter[T] = new ScalaJacksonWrite[T](config: _*)
 
     /**
       * Creates new `ScalaJacksonFormat[T]` for generic T type
       *
+      * @param config ObjectMapper configuration objects.
+      *               See supported [[ScalaJacksonParser.parseConfiguration]]
       * @tparam T generic class type
       * @return ScalaJacksonFormatter[T]
       */
-    def format[T: ClassTag]: ScalaJacksonFormatter[T] = new ScalaJacksonFormat[T]
+    def format[T: ClassTag](config: Any*): ScalaJacksonFormatter[T] = new ScalaJacksonFormat[T](config: _*)
 }
