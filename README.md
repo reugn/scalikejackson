@@ -1,7 +1,8 @@
 ## ScalikeJackson
 [ ![Download](https://api.bintray.com/packages/reug/maven/scalikejackson/images/download.svg) ](https://bintray.com/reug/maven/scalikejackson/_latestVersion)
 
-ScalikeJackson is a lightweight scala JSON library which provides [play-json](https://github.com/playframework/play-json) like interface and backed by [Jackson](https://github.com/FasterXML/jackson).
+ScalikeJackson is a lightweight scala JSON library which provides [play-json](https://github.com/playframework/play-json) like interface and backed by [Jackson](https://github.com/FasterXML/jackson).  
+A collection of benchmarks results can be viewed [here](https://github.com/reugn/scalikejackson/blob/master/benchmarks/src/main/scala/reug/scalikejackson/benchmark/README.md).
 
 ### Partial play-json features support
 
@@ -11,7 +12,7 @@ ScalikeJackson is a lightweight scala JSON library which provides [play-json](ht
 
 #### Reading and writing objects
 - [x] Automatic conversion (implicit reader/writer)
-- [ ] Reader/Writer DSL
+- [x] Reader/Writer DSL
 - [x] Manual JSON construction
 
 ### Getting started
@@ -23,7 +24,8 @@ Add ScalikeJackson as a dependency in your project:
 ```sbtshell
 libraryDependencies += "reug" %% "scalikejackson" % "<version>"
 ```
-Basic usage:
+### Usage
+Basic operations:
 ```scala
 import reug.scalikejackson.play.Json
 import reug.scalikejackson.ScalaJacksonImpl._
@@ -40,4 +42,45 @@ val obj = Json.obj("i" -> 1,
 
 Json.stringify("""{"i":1}""".toJson)
 ```
-A collection of benchmarks results can be viewed [here](https://github.com/reugn/scalikejackson/blob/master/benchmarks/src/main/scala/reug/scalikejackson/benchmark/README.md).
+Reading and writing objects:
+```scala
+import reug.scalikejackson.play.Json
+import reug.scalikejackson.ScalaJacksonImpl._
+
+case class MockStruct(
+                         i: Int,
+                         s: String,
+                         b: Option[Boolean]
+                     )
+case class Container(
+                        i_str: String,
+                        i_mock: MockStruct
+                    )
+
+val mock_instance = MockStruct(1, "a", Some(true))
+val container_instance = Container("asdf", mock_instance)
+
+val mock_writes = Json.writes[MockStruct](
+    p => (
+        ("in", classOf[Int], p.i),
+        ("sn", classOf[String], p.s),
+        ("bn", Option(classOf[Boolean]), p.b)
+    )
+)
+
+val mock_reads = Json.reads[MockStruct](
+    ("in", classOf[Int]),
+    ("sn", classOf[String]),
+    ("bn", Option(classOf[Boolean]))
+)
+
+implicit val mock_format = Json.format[MockStruct]() or(mock_writes, mock_reads)
+implicit val container_format = Json.format[Container]() or(mock_writes, mock_reads)
+
+mock_instance.write shouldBe """{"in":1,"sn":"a","bn":true}"""
+container_instance.write shouldBe """{"i_str":"asdf","i_mock":{"in":1,"sn":"a","bn":true}}"""
+```
+Support custom mapper configuration:
+```scala
+implicit val format = Json.format[MockStruct](PropertyNamingStrategy.SNAKE_CASE)
+```
