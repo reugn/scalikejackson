@@ -84,3 +84,9 @@ Support custom mapper configuration:
 ```scala
 implicit val format = Json.format[MockStruct](PropertyNamingStrategy.SNAKE_CASE)
 ```
+### Contributing
+Feedback, bug reports, and pull requests are greatly appreciated.
+
+### License
+Licensed under the Apache 2.0 License.
+See the [LICENSE](https://github.com/reugn/scalikejackson/blob/master/LICENSE.txt) file for details.
