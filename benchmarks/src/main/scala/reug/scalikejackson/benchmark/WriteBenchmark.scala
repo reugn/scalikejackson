@@ -6,7 +6,7 @@ import org.openjdk.jmh.annotations._
 import org.openjdk.jmh.infra.Blackhole
 import play.api.libs.json.Json
 import reug.scalikejackson.ScalaJacksonImpl._
-import reug.scalikejackson.test.models.MockStruct
+import reug.scalikejackson.benchmark.models.MockStruct
 
 /**
   * sbt "bench/jmh:run -i 1 -wi 1 -f1 -t1 .*WriteBenchmark.*"

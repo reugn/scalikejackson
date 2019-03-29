@@ -1,13 +1,11 @@
 package reug.scalikejackson.test.models
 
-import com.fasterxml.jackson.core.{JsonGenerator, JsonParser}
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer
-import com.fasterxml.jackson.databind.node.{BooleanNode, IntNode}
 import com.fasterxml.jackson.databind.ser.std.StdSerializer
-import com.fasterxml.jackson.databind.{DeserializationContext, JsonNode, SerializerProvider}
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
-import reug.scalikejackson.{ScalaJacksonFormat, ScalaJacksonFormatter}
+import reug.scalikejackson.ScalaJacksonFormatter
+import reug.scalikejackson.play.{Json => LJson}
 
 case class MockStruct(
                          i: Int,
@@ -19,28 +17,22 @@ case class MockStruct(
 
 object MockStruct {
 
-    class MockStructSer(t: Class[MockStruct]) extends StdSerializer[MockStruct](t) {
-        override def serialize(value: MockStruct, gen: JsonGenerator, provider: SerializerProvider): Unit = {
-            gen.writeStartObject()
-            gen.writeNumberField("in", value.i)
-            gen.writeStringField("sn", value.s)
-            if (value.b.isDefined) gen.writeBooleanField("bn", value.b.get)
-            gen.writeEndObject()
-        }
-    }
+    val reader: StdDeserializer[MockStruct] = LJson.reads[MockStruct](
+        ("in", classOf[Int]),
+        ("sn", classOf[String]),
+        ("bn", Option(classOf[Boolean]))
+    )
 
-    class MockStructDe(t: Class[MockStruct]) extends StdDeserializer[MockStruct](t) {
-        override def deserialize(p: JsonParser, ctxt: DeserializationContext): MockStruct = {
-            val node = p.getCodec.readTree[JsonNode](p)
-            val i = node.get("in").asInstanceOf[IntNode].intValue()
-            val s = node.get("sn").asText
-            val b = Option(node.get("bn")).map(_.asInstanceOf[BooleanNode].booleanValue())
-            MockStruct(i, s, b)
-        }
-    }
+    val writer: StdSerializer[MockStruct] = LJson.writes[MockStruct](
+        p => (
+            ("in", classOf[Int], p.i),
+            ("sn", classOf[String], p.s),
+            ("bn", Option(classOf[Boolean]), p.b)
+        )
+    )
 
     implicit val formatter: ScalaJacksonFormatter[MockStruct] =
-        new ScalaJacksonFormat[MockStruct] + (new MockStructSer(classOf[MockStruct]), new MockStructDe(classOf[MockStruct]))
+        LJson.format[MockStruct]() or(writer, reader)
 
     val mock_reads: Reads[MockStruct] = (
         (__ \ "in").read[Int] and

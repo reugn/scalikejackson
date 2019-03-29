@@ -1,5 +1,7 @@
 package reug.scalikejackson
 
+import java.security.InvalidParameterException
+
 import com.fasterxml.jackson.databind._
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer
 import com.fasterxml.jackson.databind.module.SimpleModule
@@ -13,90 +15,107 @@ import scala.reflect.ClassTag
 import scala.util.Try
 
 sealed trait ScalaJacksonParser[T] {
-    val mappers: mutable.MutableList[ObjectMapper] = mutable.MutableList[ObjectMapper]()
-    mappers += (new ObjectMapper() with ScalaObjectMapper)
+    self =>
+    private[scalikejackson] val mappers: mutable.MutableList[ObjectMapper] = mutable.MutableList[ObjectMapper]()
+
+    protected def registerSerializer[U: ClassTag](ser: StdSerializer[U]): this.type = {
+        val clazz = implicitly[ClassTag[U]].runtimeClass.asInstanceOf[Class[U]]
+        rawObjectMapper
+            .registerModule((new SimpleModule).addSerializer(clazz, ser)) +=: mappers
+        self
+    }
+
+    protected def registerDeserializer[U: ClassTag](de: StdDeserializer[U]): this.type = {
+        val clazz = implicitly[ClassTag[U]].runtimeClass.asInstanceOf[Class[U]]
+        rawObjectMapper
+            .registerModule((new SimpleModule).addDeserializer(clazz, de)) +=: mappers
+        self
+    }
+
+    protected def registerSerde[U: ClassTag](serde: (StdSerializer[U], StdDeserializer[U])): this.type = {
+        val (ser, de) = serde
+        val clazz = implicitly[ClassTag[U]].runtimeClass.asInstanceOf[Class[U]]
+        rawObjectMapper
+            .registerModule((new SimpleModule).addSerializer(clazz, ser).addDeserializer(clazz, de)) +=: mappers
+        self
+    }
+
+    protected def parseConfiguration(config: Any*): ObjectMapper = {
+        val mapper = rawObjectMapper
+        config.toList.foreach {
+            case s: PropertyNamingStrategy =>
+                mapper.setPropertyNamingStrategy(s)
+            case conf@_ =>
+                throw new InvalidParameterException(s"Invalid configuration $conf")
+        }
+        mapper
+    }
+
+    protected def addMapper(mapper: ObjectMapper): Unit = mappers += mapper
+
+    protected def rawObjectMapper: ObjectMapper = (new ObjectMapper() with ScalaObjectMapper)
         .registerModule(DefaultScalaModule)
         .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
         .configure(DeserializationFeature.FAIL_ON_NULL_FOR_PRIMITIVES, true)
 
-    def registerSerializer(ser: StdSerializer[T])(implicit ctag: ClassTag[T]): ScalaJacksonParser[T] = {
-        val clazz = ctag.runtimeClass.asInstanceOf[Class[T]]
-        (new ObjectMapper() with ScalaObjectMapper).registerModule((new SimpleModule).addSerializer(clazz, ser)) +=: mappers
-        this
-    }
-
-    def registerDeserializer(de: StdDeserializer[T])(implicit ctag: ClassTag[T]): ScalaJacksonParser[T] = {
-        val clazz = ctag.runtimeClass.asInstanceOf[Class[T]]
-        (new ObjectMapper() with ScalaObjectMapper).registerModule((new SimpleModule).addDeserializer(clazz, de)) +=: mappers
-        this
-    }
-
-    def registerSerde(serde: (StdSerializer[T], StdDeserializer[T]))(implicit ctag: ClassTag[T]): ScalaJacksonParser[T] = {
-        val (ser, de) = serde
-        val clazz = ctag.runtimeClass.asInstanceOf[Class[T]]
-        (new ObjectMapper() with ScalaObjectMapper).
-            registerModule((new SimpleModule).addSerializer(clazz, ser).addDeserializer(clazz, de)) +=: mappers
-        this
-    }
-
     protected def _serdeException(serde: String)(implicit ctag: ClassTag[T]): Nothing = {
-        val cn = implicitly[ClassTag[T]].runtimeClass.getSimpleName
+        val cn = ctag.runtimeClass.getSimpleName
         throw new Exception(s"No $cn $serde found for json input")
     }
 }
 
 trait ScalaJacksonReader[T] extends ScalaJacksonParser[T] {
-    def read(str: String)(implicit ctag: ClassTag[T]): T = {
-        val clazz = implicitly[ClassTag[T]].runtimeClass.asInstanceOf[Class[T]]
+    private[scalikejackson] def read(str: String)(implicit ctag: ClassTag[T]): T = {
+        val clazz = ctag.runtimeClass.asInstanceOf[Class[T]]
         for (i <- mappers.indices) {
             Try(mappers(i).readValue(str, clazz)).toOption.map(return _)
         }
-        _serdeException("deserializer")
+        _serdeException(getClass.getSimpleName)
     }
 
-    def toJson(str: String)(implicit ctag: ClassTag[T]): JsonNode = {
+    private[scalikejackson] def toJson(str: String)(implicit ctag: ClassTag[T]): JsonNode = {
         for (i <- mappers.indices) {
             Try(mappers(i).readTree(str)).toOption.map(return _)
         }
-        _serdeException("deserializer")
+        _serdeException(getClass.getSimpleName)
     }
 
-    def convert(obj: Any)(implicit ctag: ClassTag[T]): T = {
+    private[scalikejackson] def convert(obj: Any)(implicit ctag: ClassTag[T]): T = {
         for (i <- mappers.indices) {
             Try(mappers(i).convertValue(obj, ctag.runtimeClass.asInstanceOf[Class[T]])).toOption.map(return _)
         }
-        _serdeException("deserializer")
+        _serdeException(getClass.getSimpleName)
     }
 
-    def +(de: StdDeserializer[T])(implicit ctag: ClassTag[T]): ScalaJacksonReader[T] =
-        registerDeserializer(de).asInstanceOf[ScalaJacksonReader[T]]
+    def or[U: ClassTag](de: StdDeserializer[U]): this.type =
+        registerDeserializer(de)
 }
 
 trait ScalaJacksonWriter[T] extends ScalaJacksonParser[T] {
-    def write(obj: T)(implicit ctag: ClassTag[T]): String = {
+    private[scalikejackson] def write(obj: T)(implicit ctag: ClassTag[T]): String = {
         for (i <- mappers.indices) {
             Try(mappers(i).writeValueAsString(obj)).toOption.map(return _)
         }
-        _serdeException("serializer")
+        _serdeException(getClass.getSimpleName)
     }
 
-    def +(ser: StdSerializer[T])(implicit ctag: ClassTag[T]): ScalaJacksonWriter[T] =
-        registerSerializer(ser).asInstanceOf[ScalaJacksonWriter[T]]
+    def or[U: ClassTag](ser: StdSerializer[U]): this.type =
+        registerSerializer(ser)
 }
 
 trait ScalaJacksonFormatter[T] extends ScalaJacksonReader[T] with ScalaJacksonWriter[T] {
-    override def +(ser: StdSerializer[T])(implicit ctag: ClassTag[T]): ScalaJacksonFormatter[T] =
-        registerSerializer(ser).asInstanceOf[ScalaJacksonFormatter[T]]
-
-    override def +(de: StdDeserializer[T])(implicit ctag: ClassTag[T]): ScalaJacksonFormatter[T] =
-        registerDeserializer(de).asInstanceOf[ScalaJacksonFormatter[T]]
-
-    def +(serde: (StdSerializer[T], StdDeserializer[T]))(implicit ctag: ClassTag[T]): ScalaJacksonFormatter[T] =
-        registerSerde(serde).asInstanceOf[ScalaJacksonFormatter[T]]
+    def or[U: ClassTag](serde: (StdSerializer[U], StdDeserializer[U])): this.type =
+        registerSerde(serde)
 }
 
-class ScalaJacksonRead[T: ClassTag] extends ScalaJacksonReader[T]
+class ScalaJacksonRead[T: ClassTag](config: Any*) extends ScalaJacksonReader[T] {
+    addMapper(parseConfiguration(config: _*))
+}
 
-class ScalaJacksonWrite[T: ClassTag] extends ScalaJacksonWriter[T]
+class ScalaJacksonWrite[T: ClassTag](config: Any*) extends ScalaJacksonWriter[T] {
+    addMapper(parseConfiguration(config: _*))
+}
 
-class ScalaJacksonFormat[T: ClassTag] extends ScalaJacksonFormatter[T] with ScalaJacksonReader[T] with ScalaJacksonWriter[T]
+class ScalaJacksonFormat[T: ClassTag](config: Any*) extends ScalaJacksonFormatter[T] {
+    addMapper(parseConfiguration(config: _*))
+}

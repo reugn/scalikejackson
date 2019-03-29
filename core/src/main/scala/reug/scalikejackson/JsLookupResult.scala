@@ -21,7 +21,7 @@ case class JsLookupResult(node: Option[JsonNode]) {
         node.get.as[T]
     }
 
-    def asOpt[@specialized(Specializable.Everything) T: ScalaJacksonReader : ClassTag]: Option[T] = {
+    def asOpt[T: ScalaJacksonReader : ClassTag]: Option[T] = {
         node.flatMap(_.asOpt[T])
     }
 
