@@ -28,7 +28,8 @@ lazy val commonSettings = Seq(
 lazy val noPublishSettings = Seq(
     publish := {},
     publishLocal := {},
-    publishArtifact := false
+    publishArtifact := false,
+    skip in publish := true
 )
 
 lazy val bench = (project in file("benchmarks")).settings(
