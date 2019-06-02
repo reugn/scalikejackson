@@ -1,5 +1,6 @@
 ## ScalikeJackson
 [ ![Download](https://api.bintray.com/packages/reug/maven/scalikejackson/images/download.svg) ](https://bintray.com/reug/maven/scalikejackson/_latestVersion)
+[![Build Status](https://travis-ci.org/reugn/scalikejackson.svg?branch=master)](https://travis-ci.org/reugn/scalikejackson)
 
 ScalikeJackson is a lightweight scala JSON library which provides [play-json](https://github.com/playframework/play-json) like interface and backed by [Jackson](https://github.com/FasterXML/jackson).  
 A collection of benchmarks results can be viewed [here](https://github.com/reugn/scalikejackson/blob/master/benchmarks/src/main/scala/reug/scalikejackson/benchmark/README.md).
@@ -88,5 +89,4 @@ implicit val format = Json.format[MockStruct](PropertyNamingStrategy.SNAKE_CASE)
 Feedback, bug reports, and pull requests are greatly appreciated.
 
 ### License
-Licensed under the Apache 2.0 License.
-See the [LICENSE](https://github.com/reugn/scalikejackson/blob/master/LICENSE.txt) file for details.
+Licensed under the [Apache 2.0 License](./LICENSE.txt).
