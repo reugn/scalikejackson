@@ -1,6 +1,6 @@
 
-val jacksonVersion = "2.9.7"
-val playJsonVersion = "2.6.10"
+val jacksonVersion = "2.9.9"
+val playJsonVersion = "2.7.3"
 val playLib = "com.typesafe.play" %% "play-json" % playJsonVersion
 
 lazy val commonSettings = Seq(
