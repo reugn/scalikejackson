@@ -53,8 +53,8 @@ class CompatibilityTest extends FlatSpec with Matchers with Resources {
     it should "merge objects properly" in {
         val lite = (LJson.parse(short_custom_json).a[ObjectNode] ++ LJson.parse(short_custom_json_opt).a[ObjectNode]) - "c"
         val play = (Json.parse(short_custom_json).as[JsObject] ++ Json.parse(short_custom_json_opt).as[JsObject]) - "c"
-
-        LJson.stringify(lite) shouldBe Json.stringify(play)
+        //different field ordering
+        Json.parse(LJson.stringify(lite)) shouldBe play
     }
 
     it should "parse enum objects properly" in {
