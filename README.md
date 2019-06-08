@@ -18,11 +18,11 @@ A collection of benchmarks results can be viewed [here](https://github.com/reugn
 
 ### Getting started
 Add bintray resolver:
-```sbtshell
+```scala
 resolvers += Resolver.bintrayRepo("reug", "maven")
 ```
 Add ScalikeJackson as a dependency in your project:
-```sbtshell
+```scala
 libraryDependencies += "reug" %% "scalikejackson" % "<version>"
 ```
 ### Usage
