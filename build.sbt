@@ -1,6 +1,6 @@
 
-val jacksonVersion = "2.9.7"
-val playJsonVersion = "2.6.10"
+val jacksonVersion = "2.9.9"
+val playJsonVersion = "2.7.3"
 val playLib = "com.typesafe.play" %% "play-json" % playJsonVersion
 
 lazy val commonSettings = Seq(
@@ -28,7 +28,8 @@ lazy val commonSettings = Seq(
 lazy val noPublishSettings = Seq(
     publish := {},
     publishLocal := {},
-    publishArtifact := false
+    publishArtifact := false,
+    skip in publish := true
 )
 
 lazy val bench = (project in file("benchmarks")).settings(

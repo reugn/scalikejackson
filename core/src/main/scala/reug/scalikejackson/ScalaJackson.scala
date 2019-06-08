@@ -1,6 +1,8 @@
 package reug.scalikejackson
 
 import java.security.InvalidParameterException
+import java.text.DateFormat
+import java.util.TimeZone
 
 import com.fasterxml.jackson.databind._
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer
@@ -45,6 +47,10 @@ sealed trait ScalaJacksonParser[T] {
         config.toList.foreach {
             case s: PropertyNamingStrategy =>
                 mapper.setPropertyNamingStrategy(s)
+            case df: DateFormat =>
+                mapper.setDateFormat(df)
+            case tz: TimeZone =>
+                mapper.setTimeZone(tz)
             case conf@_ =>
                 throw new InvalidParameterException(s"Invalid configuration $conf")
         }
