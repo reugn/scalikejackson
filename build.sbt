@@ -51,8 +51,7 @@ lazy val commons = (project in file("commons")).settings(
 )
 
 lazy val `macro` = (project in file("macro")).settings(
-    commonSettings,
-    noPublishSettings
+    commonSettings
 ).settings(
     name := "scalikejackson-macro",
     libraryDependencies += "org.scala-lang" % "scala-reflect" % scalaVersion.value
@@ -71,4 +70,4 @@ lazy val core = (project in file("core")).settings(
 lazy val root = (project in file(".")).settings(
     noPublishSettings,
     name := "scalikejackson-root"
-).aggregate(core)
+).aggregate(core, `macro`)
