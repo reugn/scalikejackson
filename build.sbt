@@ -1,18 +1,18 @@
 
 val jacksonVersion = "2.9.9"
-val playJsonVersion = "2.7.3"
+val playJsonVersion = "2.7.4"
 val playLib = "com.typesafe.play" %% "play-json" % playJsonVersion
 
 lazy val commonSettings = Seq(
     organization := "reug",
     scalaVersion := "2.12.8",
-    crossScalaVersions := Seq("2.11.12", scalaVersion.value),
+    crossScalaVersions := Seq("2.11.12", scalaVersion.value, "2.13.0"),
 
     libraryDependencies ++= Seq(
         "com.fasterxml.jackson.core" % "jackson-core" % jacksonVersion,
         "com.fasterxml.jackson.core" % "jackson-annotations" % jacksonVersion,
         "com.fasterxml.jackson.module" %% "jackson-module-scala" % jacksonVersion,
-        "org.scalatest" %% "scalatest" % "3.0.5" % Test
+        "org.scalatest" %% "scalatest" % "3.0.8" % Test
     ),
     scalacOptions := Seq(
         "-target:jvm-1.8",

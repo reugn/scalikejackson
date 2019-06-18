@@ -18,7 +18,7 @@ import scala.util.Try
 
 sealed trait ScalaJacksonParser[T] {
     self =>
-    private[scalikejackson] val mappers: mutable.MutableList[ObjectMapper] = mutable.MutableList[ObjectMapper]()
+    private[scalikejackson] val mappers: mutable.ArrayBuffer[ObjectMapper] = mutable.ArrayBuffer[ObjectMapper]()
 
     protected def registerSerializer[U: ClassTag](ser: StdSerializer[U]): this.type = {
         val clazz = implicitly[ClassTag[U]].runtimeClass.asInstanceOf[Class[U]]
