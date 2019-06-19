@@ -61,6 +61,7 @@ sealed trait ScalaJacksonParser[T] {
 
     protected def rawObjectMapper: ObjectMapper = (new ObjectMapper() with ScalaObjectMapper)
         .registerModule(DefaultScalaModule)
+        .enable(DeserializationFeature.USE_BIG_DECIMAL_FOR_FLOATS)
         .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
         .configure(DeserializationFeature.FAIL_ON_NULL_FOR_PRIMITIVES, true)
 
