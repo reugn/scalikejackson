@@ -17,6 +17,7 @@ object ScalaJacksonImpl {
     implicit val jsonNodeFormatInt: ScalaJacksonFormatter[Int] = new ScalaJacksonFormat[Int]
     implicit val jsonNodeFormatLong: ScalaJacksonFormatter[Long] = new ScalaJacksonFormat[Long]
     implicit val jsonNodeFormatBool: ScalaJacksonFormatter[Boolean] = new ScalaJacksonFormat[Boolean]
+    implicit val jsonNodeFormatFloat: ScalaJacksonFormatter[Float] = new ScalaJacksonFormat[Float]
 
     implicit class StringImpl(val str: String) extends AnyVal {
         @implicitNotFound("Could not find a ScalaJacksonReader[${T}] in scope.")
