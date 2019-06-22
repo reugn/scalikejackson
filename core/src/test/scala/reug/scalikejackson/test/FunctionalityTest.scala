@@ -59,4 +59,8 @@ class FunctionalityTest extends FlatSpec with Matchers with Resources {
             e => e._2 shouldBe obj
         }
     }
+
+    it should "parse float value properly" in {
+        Json.parse("7.877632165348009E31").as[Float] shouldBe 7.877632E31f
+    }
 }
