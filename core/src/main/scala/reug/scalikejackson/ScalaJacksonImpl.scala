@@ -18,6 +18,8 @@ object ScalaJacksonImpl {
     implicit val jsonNodeFormatLong: ScalaJacksonFormatter[Long] = new ScalaJacksonFormat[Long]
     implicit val jsonNodeFormatBool: ScalaJacksonFormatter[Boolean] = new ScalaJacksonFormat[Boolean]
     implicit val jsonNodeFormatFloat: ScalaJacksonFormatter[Float] = new ScalaJacksonFormat[Float]
+    implicit val jsonNodeFormatByte: ScalaJacksonFormatter[Byte] = new ScalaJacksonFormat[Byte]
+    implicit val jsonNodeFormatChar: ScalaJacksonFormatter[Char] = new ScalaJacksonFormat[Char]
 
     implicit class StringImpl(val str: String) extends AnyVal {
         @implicitNotFound("Could not find a ScalaJacksonReader[${T}] in scope.")
@@ -34,6 +36,13 @@ object ScalaJacksonImpl {
     implicit class JsonImpl[T: ScalaJacksonWriter : ClassTag](val pr: T) {
         def write: String = {
             implicitly[ScalaJacksonWriter[T]].write(pr)
+        }
+    }
+
+    @implicitNotFound("Could not find a ScalaJacksonWriter[${T}] in scope.")
+    implicit class ArrayImpl[T: ScalaJacksonWriter : ClassTag](val arr: Array[T]) {
+        def write: String = {
+            arr.map(implicitly[ScalaJacksonWriter[T]].write).mkString("[", ",", "]")
         }
     }
 
@@ -128,7 +137,7 @@ object ScalaJacksonImpl {
 
     implicit class SeqImpl[T: ScalaJacksonWriter : ClassTag](val seq: Seq[T]) {
         def write: String = {
-            "[" + seq.map(implicitly[ScalaJacksonWriter[T]].write).mkString(",") + "]"
+            seq.map(implicitly[ScalaJacksonWriter[T]].write).mkString("[", ",", "]")
         }
     }
 
