@@ -67,6 +67,18 @@ class FunctionalityTest extends FlatSpec with Matchers with Resources {
         Json.parse("7.006492321624086e-46").as[Float] shouldBe 1.4E-45f
     }
 
+    it should "write primitive values properly" in {
+        val intVal = 123
+        val strVal = "123"
+        intVal.write shouldBe strVal
+        intVal.toByte.write shouldBe strVal
+        intVal.toChar.write shouldBe intVal.toChar.toString
+        123.456f.write shouldBe "123.456"
+        123L.write shouldBe strVal
+        true.write shouldBe "true"
+        strVal.write shouldBe strVal
+    }
+
     it should "parse Array values properly" in {
         val byteArray = (1 to 8).map(_.toByte).toArray
         byteArray.write shouldBe "[1,2,3,4,5,6,7,8]"
