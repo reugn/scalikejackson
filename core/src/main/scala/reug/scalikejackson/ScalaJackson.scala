@@ -126,3 +126,9 @@ class ScalaJacksonWrite[T: ClassTag](config: Any*) extends ScalaJacksonWriter[T]
 class ScalaJacksonFormat[T: ClassTag](config: Any*) extends ScalaJacksonFormatter[T] {
     addMapper(parseConfiguration(config: _*))
 }
+
+class ScalaJacksonFormatPrimitive[T: ClassTag](config: Any*) extends ScalaJacksonFormatter[T] {
+    addMapper(parseConfiguration(config: _*))
+
+    override private[scalikejackson] def write(obj: T)(implicit ctag: ClassTag[T]): String = obj.toString
+}
