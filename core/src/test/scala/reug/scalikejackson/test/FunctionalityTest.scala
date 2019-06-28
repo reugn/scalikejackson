@@ -70,13 +70,15 @@ class FunctionalityTest extends FlatSpec with Matchers with Resources {
     it should "write primitive values properly" in {
         val intVal = 123
         val strVal = "123"
+        val charExpected = s""""${intVal.toChar.toString}""""
+        val strExpected = s""""$strVal""""
         intVal.write shouldBe strVal
         intVal.toByte.write shouldBe strVal
-        intVal.toChar.write shouldBe intVal.toChar.toString
+        intVal.toChar.write shouldBe charExpected
         123.456f.write shouldBe "123.456"
         123L.write shouldBe strVal
         true.write shouldBe "true"
-        strVal.write shouldBe strVal
+        strVal.write shouldBe strExpected
     }
 
     it should "parse Array values properly" in {

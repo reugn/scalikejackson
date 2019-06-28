@@ -13,13 +13,13 @@ object ScalaJacksonImpl {
     implicit val jsonNodeFormat: ScalaJacksonFormatter[JsonNode] = new ScalaJacksonFormat[JsonNode]
 
     //primitives' formatters
-    implicit val jsonNodeFormatString: ScalaJacksonFormatter[String] = new ScalaJacksonFormatPrimitive[String]
+    implicit val jsonNodeFormatString: ScalaJacksonFormatter[String] = new ScalaJacksonFormat[String]
     implicit val jsonNodeFormatInt: ScalaJacksonFormatter[Int] = new ScalaJacksonFormatPrimitive[Int]
     implicit val jsonNodeFormatLong: ScalaJacksonFormatter[Long] = new ScalaJacksonFormatPrimitive[Long]
     implicit val jsonNodeFormatBool: ScalaJacksonFormatter[Boolean] = new ScalaJacksonFormatPrimitive[Boolean]
     implicit val jsonNodeFormatFloat: ScalaJacksonFormatter[Float] = new ScalaJacksonFormatPrimitive[Float]
     implicit val jsonNodeFormatByte: ScalaJacksonFormatter[Byte] = new ScalaJacksonFormatPrimitive[Byte]
-    implicit val jsonNodeFormatChar: ScalaJacksonFormatter[Char] = new ScalaJacksonFormatPrimitive[Char]
+    implicit val jsonNodeFormatChar: ScalaJacksonFormatter[Char] = new ScalaJacksonFormat[Char]
 
     implicit class StringImpl(val str: String) extends AnyVal {
         @implicitNotFound("Could not find a ScalaJacksonReader[${T}] in scope.")
