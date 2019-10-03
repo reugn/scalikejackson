@@ -112,7 +112,7 @@ object ScalaJacksonImpl {
                 val result = source.deepCopy
                 val target_list = target.fieldNames.asScala.toList
                 for (item <- target_list) {
-                    result.set(item, target get item)
+                    result.set[JsonNode](item, target get item)
                 }
                 result
             }
