@@ -1,12 +1,12 @@
 
-val jacksonVersion = "2.9.9"
+val jacksonVersion = "2.10.0"
 val playJsonVersion = "2.7.4"
 val playLib = "com.typesafe.play" %% "play-json" % playJsonVersion
 
 lazy val commonSettings = Seq(
     organization := "reug",
-    scalaVersion := "2.12.8",
-    crossScalaVersions := Seq("2.11.12", scalaVersion.value, "2.13.0"),
+    scalaVersion := "2.12.10",
+    crossScalaVersions := Seq("2.11.12", scalaVersion.value, "2.13.1"),
 
     libraryDependencies ++= Seq(
         "com.fasterxml.jackson.core" % "jackson-core" % jacksonVersion,

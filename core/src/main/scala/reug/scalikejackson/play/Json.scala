@@ -21,7 +21,7 @@ object Json {
     private val json_node_factory = JsonNodeFactory.withExactBigDecimals(true)
 
     @inline def obj(fields: (String, JsonNode)*): ObjectNode = {
-        new ObjectNode(json_node_factory).setAll(fields.toMap asJava).a[ObjectNode]
+        new ObjectNode(json_node_factory).setAll[JsonNode](fields.toMap asJava).a[ObjectNode]
     }
 
     @inline def arr(items: JsonNode*): ArrayNode = {
